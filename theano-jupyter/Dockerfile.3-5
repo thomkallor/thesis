@@ -7,8 +7,9 @@ ARG KERAS_VERSION=1.0.8
 ARG CAFFE_VERSION=master
 ARG ANACONDA_VERSION=Anaconda3-4.2.0
 
-## update cuda links
-RUN echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1404/x86_64 /" > /etc/apt/sources.list.d/cuda.list
+## remove broken cuda links 
+RUN rm /etc/apt/sources.list.d/cuda.list && \
+	rm /etc/apt/sources.list.d/nvidia-ml.list
 
 ## install basic dependencies
 RUN apt-get update && apt-get install -y \
