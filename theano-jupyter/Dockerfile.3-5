@@ -1,4 +1,4 @@
-FROM ubuntu:14.04
+FROM nvidia/cuda:8.0-cudnn5-devel-ubuntu14.04
 
 ARG THEANO_VERSION=master
 ARG TENSORFLOW_VERSION=1.2.1
@@ -6,6 +6,9 @@ ARG TENSORFLOW_ARCH=gpu
 ARG KERAS_VERSION=1.0.8
 ARG CAFFE_VERSION=master
 ARG ANACONDA_VERSION=Anaconda3-4.2.0
+
+## update cuda links
+RUN echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1404/x86_64 /" > /etc/apt/sources.list.d/cuda.list
 
 ## install basic dependencies
 RUN apt-get update && apt-get install -y \
@@ -17,30 +20,27 @@ RUN apt-get update && apt-get install -y \
     sudo \
     wget
 
-## install cuda8.0 for caffe, tensorflow
-RUN wget https://developer.nvidia.com/compute/cuda/8.0/Prod2/local_installers/cuda-repo-ubuntu1604-8-0-local-ga2_8.0.61-1_amd64-deb
-RUN yes | dpkg -i ./cuda-repo-ubuntu1604-8-0-local-ga2_8.0.61-1_amd64-deb
-RUN apt-get update && apt-get install -y cuda-toolkit-8-0
-RUN rm cuda-repo-ubuntu1604-8-0-local-ga2_8.0.61-1_amd64-deb
+# ## install cuda8.0 for caffe, tensorflow
+# RUN wget https://developer.nvidia.com/compute/cuda/8.0/Prod2/local_installers/cuda-repo-ubuntu1604-8-0-local-ga2_8.0.61-1_amd64-deb
+# RUN yes | dpkg -i ./cuda-repo-ubuntu1604-8-0-local-ga2_8.0.61-1_amd64-deb
+# RUN apt-get update && apt-get install -y cuda-toolkit-8-0
+# RUN rm cuda-repo-ubuntu1604-8-0-local-ga2_8.0.61-1_amd64-deb
 
-## tensorflow searches for the wrong file create a sym link
-## see tensorflow installation instructions
-RUN cd /usr/local/cuda/targets/x86_64-linux/lib/stubs && ln -f -s libcuda.so libcuda.so.1
 
-ENV LIBRARY_PATH="/usr/local/cuda/lib64:$LIBRARY_PATH"
-ENV LD_LIBRARY_PATH="/usr/local/cuda/targets/x86_64-linux/lib/stubs:/usr/local/cuda-8.0/lib64:$LD_LIBRARY_PATH"
-ENV PATH="/usr/local/cuda/bin:$PATH"
+# ENV LIBRARY_PATH="/usr/local/cuda/lib64/stubs:/usr/local/cuda/lib64:$LIBRARY_PATH"
+# ENV LD_LIBRARY_PATH="/usr/local/cuda/targets/x86_64-linux/lib/stubs:/usr/local/cuda-8.0/lib64:$LD_LIBRARY_PATH"
+# ENV PATH="/usr/local/cuda/bin:$PATH"
 
-RUN wget http://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1604/x86_64/libcudnn5-dev_5.1.10-1+cuda8.0_amd64.deb && \
-	wget http://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1604/x86_64/libcudnn5_5.1.10-1+cuda8.0_amd64.deb
+# RUN wget http://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1604/x86_64/libcudnn5-dev_5.1.10-1+cuda8.0_amd64.deb && \
+# 	wget http://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1604/x86_64/libcudnn5_5.1.10-1+cuda8.0_amd64.deb
 
-RUN yes | dpkg -i libcudnn5_5.1.10-1+cuda8.0_amd64.deb && \
-	yes | dpkg -i libcudnn5-dev_5.1.10-1+cuda8.0_amd64.deb
+# RUN yes | dpkg -i libcudnn5_5.1.10-1+cuda8.0_amd64.deb && \
+# 	yes | dpkg -i libcudnn5-dev_5.1.10-1+cuda8.0_amd64.deb
 
-RUN apt-get update && apt-get install -y libcudnn5-dev
+# RUN apt-get update && apt-get install -y libcudnn5-dev
 
-RUN rm libcudnn5_5.1.10-1+cuda8.0_amd64.deb && \
-	rm libcudnn5-dev_5.1.10-1+cuda8.0_amd64.deb
+# RUN rm libcudnn5_5.1.10-1+cuda8.0_amd64.deb && \
+# 	rm libcudnn5-dev_5.1.10-1+cuda8.0_amd64.deb
 
 # see https://docs.anaconda.com/anaconda/packages/oldpkglists/ to get compatibility with python x.x versions
 RUN wget https://repo.anaconda.com/archive/${ANACONDA_VERSION}-Linux-x86_64.sh \
@@ -49,7 +49,7 @@ RUN wget https://repo.anaconda.com/archive/${ANACONDA_VERSION}-Linux-x86_64.sh \
 ENV PATH="/root/anaconda3/bin:${PATH}"
 
 # change default python environment to 3.5 & update to latest compatible versions
-RUN conda install -y python=3.5
+# RUN conda install -y python=3.5
 
 ## Required by theano
 RUN conda install cmake Cython
