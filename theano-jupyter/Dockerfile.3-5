@@ -11,6 +11,9 @@ ARG ANACONDA_VERSION=Anaconda3-4.2.0
 RUN rm /etc/apt/sources.list.d/cuda.list && \
 	rm /etc/apt/sources.list.d/nvidia-ml.list
 
+## tensorflow unable to find libcupti.so.8.0
+ENV LD_LIBRARY_PATH=/usr/local/cuda/extras/CUPTI/lib64/:${LD_LIBRARY_PATH}
+
 ## install basic dependencies
 RUN apt-get update && apt-get install -y \
 	curl \

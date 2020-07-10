@@ -73,6 +73,9 @@ RUN export CMAKE_PREFIX_PATH=${CONDA_PREFIX:-"$(dirname $(which conda))/../"}
 RUN cd pytorch && python setup.py install
 RUN rm -rf pytorch
 
+## can be used if torchvision is needed
+## RUN python -m pip install torchvision==0.1.9
+
 ## Dependencies of caffe and torch
 RUN apt-get update && apt-get install -y \
 		libgflags-dev \
