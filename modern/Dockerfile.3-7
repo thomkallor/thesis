@@ -57,25 +57,6 @@ RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 100 && \
 RUN update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 100 && \
 	update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7 75
 
-# ## Dependencies of caffe
-# RUN apt-get update && apt-get install -y \
-# 		libgflags-dev \
-# 		libgoogle-glog-dev \
-# 		libleveldb-dev \
-# 		liblmdb-dev \
-# 		&& \
-# 	apt-get clean && \
-# 	apt-get autoremove && \
-# 	rm -rf /var/lib/apt/lists/*
-# SHELL ["/bin/bash", "-c"]
-# RUN conda create -n caffe python=3.5
-# RUN echo "source activate caffe" > ~/.bashrc
-# ARG PATH_ORG=${PATH}
-# ENV PATH=/root/miniconda3/envs/caffe/bin:${PATH}
-# RUN python --version
-# RUN conda env list
-# RUN python --version
-
 ## new environment for caffe
 RUN conda create -n caffe python=3.5
 SHELL ["conda", "run", "-n", "caffe", "/bin/bash", "-c"]
